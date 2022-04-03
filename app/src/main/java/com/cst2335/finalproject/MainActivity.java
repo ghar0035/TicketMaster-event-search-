@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Home homeFragment = new Home();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.frameLayout, homeFragment)
+                .replace(R.id.frameLayout, homeFragment, "HOME")
                 .commit();
     }
 
@@ -122,18 +122,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String message = null;
         switch (item.getItemId()) {
             case R.id.help:
-             showHelpDialouge();
+                List<Fragment> fragments = getSupportFragmentManager().getFragments();
+
+                String tagName = fragments.get(0).getTag();
+                if (tagName == "HOME") {
+                    // add your code here
+                    showHelpDialouge("How it works home?");
+                } else if(tagName == "SAVED") {
+                    showHelpDialouge("How saved works?");
+                } else if(tagName == "DETAIL") {
+                    showHelpDialouge("How detail works?");
+                }
+
                 break;
         }
         return true;
     }
 
-    private void showHelpDialouge() {
+    public void showHelpDialouge(String helpText) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder.setTitle("Help");
-        alertBuilder.setMessage("Search for city and distance. We will display " +
-                "nearby events. If you leave the fields empty, we will display some " +
-                "random events. By clicking on events you can see more details. ");
+        alertBuilder.setMessage(helpText);
         alertBuilder.setCancelable(true);
 
         alertBuilder.setNegativeButton(
@@ -162,15 +171,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch(item.getItemId())
         {
             case R.id.home:
-                ft.replace(R.id.frameLayout, homeFragment, "SOMETAG");    // add    Fragment
+                ft.replace(R.id.frameLayout, homeFragment, "HOME");    // add    Fragment
                 ft.commit();
                 break;
             case R.id.savedEvents:
-                ft.replace(R.id.frameLayout, savedFragment, "SOMETAG");    // add    Fragment
+                ft.replace(R.id.frameLayout, savedFragment, "SAVED");    // add    Fragment
                 ft.commit();
                 break;
             case R.id.lastSearchedEvent:
-                ft.replace(R.id.frameLayout, detailFragment, "SOMETAG");    // add    Fragment
+                ft.replace(R.id.frameLayout, detailFragment, "DETAIL");    // add    Fragment
                 ft.commit();
               //  finish();
                 break;
@@ -178,6 +187,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStackImmediate();
+        } else {
+            super.onBackPressed();
+        }
     }
 
 
