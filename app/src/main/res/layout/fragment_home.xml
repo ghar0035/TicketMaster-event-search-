@@ -42,12 +42,20 @@
             android:text="Find nearby events" />
 
 
+        <ProgressBar
+            android:id="@+id/simpleProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:indeterminateTint="@color/black"
+            android:maxHeight="0dp"/>
 
         <ListView
             android:id="@+id/eventListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp" />
+            android:layout_marginTop="10dp"
+            />
 
         <ImageView
             android:layout_width="340dp"

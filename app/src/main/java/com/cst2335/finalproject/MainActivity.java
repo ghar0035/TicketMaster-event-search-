@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.white)));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.background_dark));
+        toolbar.getOverflowIcon().setTint(getResources().getColor(android.R.color.background_dark));
         // Add navigation drawer
         renderDrawerMenu(toolbar);
     }
@@ -119,7 +120,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        SavedEvents savedFragment = new SavedEvents();
+        Details detailFragment = new Details();
+        Home homeFragment = new Home();
         String message = null;
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();// begin  FragmentTransaction
+        ft.setReorderingAllowed(true);
         switch (item.getItemId()) {
             case R.id.help:
                 List<Fragment> fragments = getSupportFragmentManager().getFragments();
@@ -133,7 +139,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else if(tagName == "DETAIL") {
                     showHelpDialouge("How detail works?");
                 }
-
+                break;
+            case R.id.tool_home:
+                ft.replace(R.id.frameLayout, homeFragment, "HOME");    // add    Fragment
+                ft.commit();
+                break;
+            case R.id.tool_saved:
+                ft.replace(R.id.frameLayout, savedFragment, "SAVED");    // add    Fragment
+                ft.commit();
+                break;
+            case R.id.tool_lastSearched:
+                ft.replace(R.id.frameLayout, detailFragment, "DETAIL");    // add    Fragment
+                ft.commit();
                 break;
         }
         return true;

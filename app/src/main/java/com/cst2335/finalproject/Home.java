@@ -1,12 +1,14 @@
 package com.cst2335.finalproject;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -42,6 +46,9 @@ public class Home extends Fragment {
     private ArrayList<Event> events = new ArrayList<>();
     ImageView placeholderImage;
     ListAdapter eventAdapter;
+    ProgressBar simpleProgressBar;
+    EditText eventTextBox;
+    EditText radiusTextBox;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -81,15 +88,27 @@ public class Home extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        getActivity().setTitle("Home - Mehri Gh - v1");
            }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getActivity().setTitle("Home - Mehri Gh - v1");
+
+       SharedPreferences prefs = this.getActivity().getSharedPreferences( "SEARCH_DETAIL" , Context.MODE_PRIVATE);
+       String city = prefs.getString("city", "");
+       String radius = prefs.getString("radius", "");
+
+
         View newView = inflater.inflate(R.layout.fragment_home, container, false);
+        eventTextBox = newView.findViewById(R.id.eventTextBox);
+        radiusTextBox = newView.findViewById(R.id.radiusTextBox);
+        eventTextBox.setText(city);
+        radiusTextBox.setText(radius);
         // Inflate the layout for this fragment
         placeholderImage = newView.findViewById(R.id.searchPlaceholder);
+        simpleProgressBar= newView.findViewById(R.id.simpleProgressBar);
+        simpleProgressBar.setVisibility(View.GONE);
 
         Button btnSearch = newView.findViewById(R.id.btnSearch);
         ListView eventListView = newView.findViewById(R.id.eventListView);
@@ -98,7 +117,9 @@ public class Home extends Fragment {
 
         // Add search event
         btnSearch.setOnClickListener(click -> {
+
             searchNearByEvents(newView);
+
             eventListView.smoothScrollToPosition(0);
         });
 
@@ -125,8 +146,10 @@ public class Home extends Fragment {
         inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
 
-        EditText eventTextBox = newView.findViewById(R.id.eventTextBox);
-        EditText radiusTextBox = newView.findViewById(R.id.radiusTextBox);
+
+         if(eventTextBox.getText().length() == 0 || radiusTextBox.getText().length() == 0) {
+             return;
+         }
         String result = null;
         try {
             result = new RequestTask()
@@ -156,7 +179,7 @@ public class Home extends Fragment {
             String url = obj.get("images").getAsJsonArray().get(0).getAsJsonObject().get("url").getAsString();
             Event event = new Event(name, id, url);
             events.add(event);
-          //  System.out.println("shahnaz ===> " + i + obj);
+
 
         }
         placeholderImage.setVisibility(View.INVISIBLE);
@@ -167,7 +190,9 @@ public class Home extends Fragment {
         @Override
         public String doInBackground(String ... uri)
         {
+
             try {
+
                 URL url = new URL(uri[0]);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -193,15 +218,26 @@ public class Home extends Fragment {
             return "Done";
         }
 
+
+        @Override
+        protected void onPreExecute() {
+            simpleProgressBar.setVisibility(View.VISIBLE);
+        }
+
         //Type 2
         public void onProgressUpdate(Integer ... args)
         {
-
+            simpleProgressBar.setVisibility(View.VISIBLE);
         }
         //Type3
         public void onPostExecute(String fromDoInBackground)
         {
-
+            new Handler().postDelayed(new Runnable(){
+                @Override
+                public void run(){
+                    simpleProgressBar.setVisibility(View.GONE);
+                }
+            }, 1000);
         }
     }
     private class ListAdapter extends BaseAdapter {
@@ -247,5 +283,16 @@ public class Home extends Fragment {
             this._id = id;
             this.imageUrl = imageUrl;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        SharedPreferences prefs = getActivity().getSharedPreferences( "SEARCH_DETAIL" , Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putString("city", eventTextBox.getText().toString());
+        edit.putString("radius", radiusTextBox.getText().toString());
+        edit.commit();
     }
 }

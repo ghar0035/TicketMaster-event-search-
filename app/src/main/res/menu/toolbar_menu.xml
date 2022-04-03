@@ -9,4 +9,25 @@
         android:orderInCategory="1"
         android:title="help"
         app:showAsAction="always" />
+
+    <item
+        android:id="@+id/tool_home"
+        android:icon="@drawable/home"
+        android:orderInCategory="1"
+        android:title="Home"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/tool_saved"
+        android:icon="@drawable/heart"
+        android:orderInCategory="2"
+        android:title="Saved events"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/tool_lastSearched"
+        android:icon="@drawable/search"
+        android:orderInCategory="3"
+        android:title="Last searched event"
+        app:showAsAction="never" />
+
 </menu>
