@@ -3,30 +3,61 @@ package com.cst2335.finalproject;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+//import androidx.recyclerview.widget.ListAdapter;
+import android.widget.ListAdapter;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,44 +65,25 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button btnSearch = findViewById(R.id.btnSearch);
-
         // Render toolbar
         renderToolbar();
-        // Add search event
-        btnSearch.setOnClickListener(click -> {
-            searchNearByEvents();
-        });
+
+        setDefaultfragment();
 
     }
 
-    private void searchNearByEvents() {
-
-        EditText eventTextBox = findViewById(R.id.eventTextBox);
-        EditText radiusTextBox = findViewById(R.id.radiusTextBox);
-        String result = null;
-        try {
-            result = new RequestTask()
-                    .execute("https://app.ticketmaster.com/discovery/v2/events.json?apikey=82OhVMuQzr9Lf0Jnp9Zcvhqs1HkBQBAC&city=ottawa&radius=100")
-                    .get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-        Gson gson = new Gson();
-        JsonObject eventObject = gson.fromJson(result, JsonObject.class);
-        JsonObject initialResponse = eventObject.get("_embedded").getAsJsonObject();
-        JsonArray eventsArray = initialResponse.get("events").getAsJsonArray();
-        System.out.println("shahnaz ===> " + eventsArray );
-       // System.out.println(eventTextBox.getText() + " " + radiusTextBox.getText());
+    private void setDefaultfragment() {
+        Home homeFragment = new Home();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, homeFragment)
+                .commit();
     }
 
     @Override
@@ -86,40 +98,81 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = findViewById(R.id.myToolbar);
         setSupportActionBar(toolbar);
         toolbar.bringToFront();
-        getSupportActionBar().setTitle("Home - Mehri Gh - v1");
+
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.white)));
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.background_dark));
         // Add navigation drawer
         renderDrawerMenu(toolbar);
     }
 
     private void renderDrawerMenu(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
+        FrameLayout frameLayout = findViewById(R.id.frameLayout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.open, R.string.close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.black));
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String message = null;
+        switch (item.getItemId()) {
+            case R.id.help:
+             showHelpDialouge();
+                break;
+        }
+        return true;
+    }
 
+    private void showHelpDialouge() {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setTitle("Help");
+        alertBuilder.setMessage("Search for city and distance. We will display " +
+                "nearby events. If you leave the fields empty, we will display some " +
+                "random events. By clicking on events you can see more details. ");
+        alertBuilder.setCancelable(true);
+
+        alertBuilder.setNegativeButton(
+                "Close",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
 
     public boolean onNavigationItemSelected(MenuItem item) {
+        SavedEvents savedFragment = new SavedEvents();
+        Details detailFragment = new Details();
+        Home homeFragment = new Home();
+
+
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();// begin  FragmentTransaction
+        ft.setReorderingAllowed(true);
+
         String message = null;
         switch(item.getItemId())
         {
             case R.id.home:
-                Intent goToHome = new Intent(MainActivity.this , MainActivity.class);
-                startActivity(goToHome);
+                ft.replace(R.id.frameLayout, homeFragment, "SOMETAG");    // add    Fragment
+                ft.commit();
                 break;
             case R.id.savedEvents:
-                Intent goToSaveEvents = new Intent(MainActivity.this, MainActivity.class);
-                startActivity(goToSaveEvents);
+                ft.replace(R.id.frameLayout, savedFragment, "SOMETAG");    // add    Fragment
+                ft.commit();
                 break;
             case R.id.lastSearchedEvent:
-                Intent goToLastSearchedItem = new Intent(MainActivity.this,  MainActivity.class);
-                startActivity(goToLastSearchedItem);
-                finish();
+                ft.replace(R.id.frameLayout, detailFragment, "SOMETAG");    // add    Fragment
+                ft.commit();
+              //  finish();
                 break;
         }
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
@@ -127,62 +180,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    class RequestTask extends AsyncTask<String, String, String> {
-        @Override
-        public String doInBackground(String ... uri)
-        {
 
-            try {
-                URL url = new URL(uri[0]);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                try {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    StringBuilder sb = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        sb.append(line+"\n");
-                    }
-                    br.close();
-                    return sb.toString();
-
-                } finally {
-                    urlConnection.disconnect();
-                }
-
-            } catch (Exception e)
-            {
-                System.out.println("mehri" + e.getMessage());
-            }
-
-            return "Done";
-        }
-
-        //Type 2
-        public void onProgressUpdate(Integer ... args)
-        {
-
-        }
-        //Type3
-        public void onPostExecute(String fromDoInBackground)
-        {
-
-        }
-    }
-
-
-    class Event {
-      String name;
-      String id;
-      String imageUrl;
-      public String _embedded;
-      public String events;
-
-      Event(String name, String id, String imageUrl){
-          this.name = name;
-          this.id = id;
-          this.imageUrl = imageUrl;
-      }
-    }
 }
 

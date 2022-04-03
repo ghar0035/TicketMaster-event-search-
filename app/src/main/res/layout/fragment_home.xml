@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Home">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:id="@+id/home_layout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="50dp"
+        tools:context=".MainActivity">
+
+        <EditText
+            android:layout_margin="10dp"
+            android:id="@+id/eventTextBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textview_border"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="10dp"
+            android:hint="Search By City" />
+
+        <EditText
+            android:layout_margin="10dp"
+            android:id="@+id/radiusTextBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingVertical="5dp"
+            android:paddingHorizontal="10dp"
+            android:background="@drawable/textview_border"
+            android:hint="Search distance (radius) - km" />
+
+        <Button
+            android:layout_margin="10dp"
+            android:id="@+id/btnSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Find nearby events" />
+
+
+
+        <ListView
+            android:id="@+id/eventListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp" />
+
+        <ImageView
+            android:layout_width="340dp"
+            android:layout_height="340dp"
+            android:src="@drawable/search"
+            android:id="@+id/searchPlaceholder"
+            />
+
+    </LinearLayout>
+
+
+</FrameLayout>

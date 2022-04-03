@@ -22,44 +22,22 @@
         app:popupTheme="@style/Theme.MaterialComponents.DayNight"
         />
 
-
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="-43dp">
 
-        >
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".MainActivity"
-            android:padding="70dp"
-            android:orientation="vertical"
-            android:id="@+id/home_layout">
+            android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/eventTextBox"
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Search an event">
-            </EditText>
-
-            <EditText
-                android:id="@+id/radiusTextBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Search distance (radius) - km">
-            </EditText>
-
-            <Button
-                android:id="@+id/btnSearch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Find nearby events" />
-
+                android:layout_height="match_parent" />
         </LinearLayout>
 
 
@@ -73,10 +51,6 @@
             app:menu="@menu/drawer_menu" />
 
     </androidx.drawerlayout.widget.DrawerLayout>
-
-
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
