@@ -137,7 +137,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 } else if(tagName == "SAVED") {
                     showHelpDialouge("How saved works?");
                 } else if(tagName == "DETAIL") {
-                    showHelpDialouge("How detail works?");
+                    showHelpDialouge("User clicks on item, they can see the" +
+                            "item result here! There is a link will redirect user" +
+                            "to the event details? . User can also save the event");
                 }
                 break;
             case R.id.tool_home:
