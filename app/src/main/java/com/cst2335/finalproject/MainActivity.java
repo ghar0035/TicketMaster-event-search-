@@ -1,3 +1,12 @@
+/*
+ * Course: 22W-CST2335-013
+ * Professor: Frank Emanuel
+ * Author: Mehri Gharacheh
+ * student# 041005509
+ * File name: MainActivity.java
+ * Date: 2022-04-08
+ * Final Project
+ */
 package com.cst2335.finalproject;
 
 import androidx.annotation.Nullable;
@@ -63,21 +72,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/**
+ *this ins our main and first activity which contains the toolbar , the toolbarMenu, the drawerBar and the drawer menu
+ */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
-
-
+    /**
+     * overrides the AppCompatActivity onCreate() menu
+     *
+     * @param savedInstanceState : is a reference to a Bundle object
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Render toolbar
-        renderToolbar();
-
+        renderToolbar(); // Render toolbar
         setDefaultfragment();
-
     }
 
+    /**
+     * sets the default fragment(Home) if it is not exist
+     */
     private void setDefaultfragment() {
         Home homeFragment = new Home();
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -86,18 +101,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 
+    /**
+     *
+     * render toolbar menu items
+     *
+     * @param menu an object of Menu class
+     * @return true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // render toolbar menu items
+
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.toolbar_menu, menu);
         return true;
     }
 
+    /**
+     * Create and renders the activity toolbar
+     */
     private void renderToolbar() {
         Toolbar toolbar = findViewById(R.id.myToolbar);
-        setSupportActionBar(toolbar);
-        toolbar.bringToFront();
+        setSupportActionBar(toolbar); //causes Android to call onCreateOptionsMenu(Menu menu)
+        toolbar.bringToFront(); //brings toolbar layout on top of other layouts
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.white)));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.background_dark));
@@ -106,6 +131,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         renderDrawerMenu(toolbar);
     }
 
+    /**
+     * Create and renders the DrawerMenu
+     * @param toolbar
+     */
     private void renderDrawerMenu(Toolbar toolbar) {
         DrawerLayout drawer = (DrawerLayout)findViewById(R.id.drawer_layout);
         FrameLayout frameLayout = findViewById(R.id.frameLayout);
@@ -118,6 +147,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /**
+     *this method used to handling the event of option menu
+     * i.e. which menu action is triggered and what should be the outcome of that action etc
+     *
+     * @param item toolbar menu items
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         SavedEvents savedFragment = new SavedEvents();
@@ -133,13 +169,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 String tagName = fragments.get(0).getTag();
                 if (tagName == "HOME") {
                     // add your code here
-                    showHelpDialouge("How it works home?");
+                    showHelpDialouge("The User enters the city name and the distance, " +
+                            "then when clicks on the 'FIND' button, " +
+                            "a list of nearby events will appears, then by click on each event, " +
+                            "the user will see some details about the event!");
                 } else if(tagName == "SAVED") {
                     showHelpDialouge("How saved works?");
                 } else if(tagName == "DETAIL") {
-                    showHelpDialouge("User clicks on item, they can see the" +
-                            "item result here! There is a link will redirect user" +
-                            "to the event details? . User can also save the event");
+                    showHelpDialouge("User clicks on item, they can see the " +
+                            "item result here! There is a link will redirect user " +
+                            "to the event details. User can also save the event!");
                 }
                 break;
             case R.id.tool_home:
@@ -158,6 +197,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * this method will create a diolog alert when the help icon is clicked
+     *
+     * @param helpText  the text to be showed when the help icon is clicked
+     */
     public void showHelpDialouge(String helpText) {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
         alertBuilder.setTitle("Help");
@@ -171,17 +215,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         dialog.cancel();
                     }
                 });
-
         AlertDialog alert = alertBuilder.create();
         alert.show();
     }
 
+    /**
+     *this method used to handling the event of drawer menu
+     * i.e. which menu action is triggered and what should be the outcome of that action etc
+     *
+     * @param item
+     * @return
+     */
     public boolean onNavigationItemSelected(MenuItem item) {
         SavedEvents savedFragment = new SavedEvents();
         Details detailFragment = new Details();
         Home homeFragment = new Home();
-
-
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();// begin  FragmentTransaction
         ft.setReorderingAllowed(true);
@@ -208,6 +256,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * spesefies what should be the outcome of clicking on the back button
+     */
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
@@ -216,7 +267,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             super.onBackPressed();
         }
     }
-
-
 }
 
