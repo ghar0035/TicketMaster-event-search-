@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Course: 22W-CST2335-013
+    Professor: Frank Emanuel
+    Author: Mehri Gharacheh
+    student# 041005509
+    File name: row_layout.xml
+    Date: 2022-04-08
+    Final Project-->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="10dp"
     android:gravity="center_vertical"
-    android:id="@+id/layoutContainer"
-    >
+    android:id="@+id/layoutContainer">
 
     <ImageView
         android:id="@+id/eventImg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        />
+        android:scaleType="centerCrop"/>
 
     <TextView
         android:id="@+id/eventDetails"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_marginTop="10dp"
-        android:text="TextView"
-        android:textSize="16dp"
+        android:text="@string/rowText"
+        android:textSize="16sp"
         android:gravity="center_horizontal"
         android:textColor="@color/black"
         android:textStyle="bold"

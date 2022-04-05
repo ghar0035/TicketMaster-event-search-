@@ -1,3 +1,13 @@
+
+/*
+ * Course: 22W-CST2335-013
+ * Professor: Frank Emanuel
+ * Author: Mehri Gharacheh
+ * student# 041005509
+ * File name: Home.java
+ * Date: 2022-04-08
+ * Final Project
+ */
 package com.cst2335.finalproject;
 
 import android.content.Context;
@@ -39,25 +49,43 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Home#newInstance} factory method to
- * create an instance of this fragment.
+ *
  */
 public class Home extends Fragment {
+    /**
+     * an instance of class arrayList to act as a container for events
+     */
     private ArrayList<Event> events = new ArrayList<>();
+    /**
+     * create instance of ImageView class
+     */
     ImageView placeholderImage;
+    /**
+     * create instance of ListAdapter class
+     */
     ListAdapter eventAdapter;
+    /**
+     * create instance of ProgressBar class
+     */
     ProgressBar simpleProgressBar;
+    /**
+     * create instance of EditText class
+     */
     EditText eventTextBox;
+    /**
+     * create instance of EditText class
+     */
     EditText radiusTextBox;
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
+    /**
+     * default constructor
+     */
     public Home() {
         // Required empty public constructor
     }
@@ -70,7 +98,6 @@ public class Home extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment Home.
      */
-    // TODO: Rename and change types and number of parameters
     public static Home newInstance(String param1, String param2) {
         Home fragment = new Home();
         Bundle args = new Bundle();
@@ -87,18 +114,23 @@ public class Home extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
            }
 
+    /**
+     *this class is where to inflate the UI
+     *
+      * @param inflater : a LayoutInflater object to load an XML layout file
+     * @param container  : acts as an invisible container in which other Views and Layouts are placed
+     * @param savedInstanceState : a reference to a Bundle object that is passed into the onCreateView method
+     * @return newView : is the root object from your XML file, It contains the widgets that are in your layout
+     */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getActivity().setTitle("Home - Mehri Gh - v1");
 
-       SharedPreferences prefs = this.getActivity().getSharedPreferences( "SEARCH_DETAIL" , Context.MODE_PRIVATE);
-       String city = prefs.getString("city", "");
-       String radius = prefs.getString("radius", "");
-
+        SharedPreferences prefs = this.getActivity().getSharedPreferences( "SEARCH_DETAIL" , Context.MODE_PRIVATE);
+        String city = prefs.getString("city", "");
+        String radius = prefs.getString("radius", "");
 
         View newView = inflater.inflate(R.layout.fragment_home, container, false);
         eventTextBox = newView.findViewById(R.id.eventTextBox);
@@ -141,11 +173,16 @@ public class Home extends Fragment {
         return newView;
     }
 
+    /**
+     * this method will be called when the find button in clicked, this function gets the data as string
+     * from the API an then renders as a list
+     *
+     * @param newView : is now the root object from your XML file, It contains the widgets that are in your layout
+     */
     private void searchNearByEvents(View newView) {
         InputMethodManager inputManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
-
 
          if(eventTextBox.getText().length() == 0 || radiusTextBox.getText().length() == 0) {
              return;
@@ -186,13 +223,16 @@ public class Home extends Fragment {
         eventAdapter.notifyDataSetChanged();
         // System.out.println(eventTextBox.getText() + " " + radiusTextBox.getText());
     }
+
+    /**
+     * this class using an AsyncTask to query data from the internet
+     */
     class RequestTask extends AsyncTask<String, String, String> {
+
+        //Network connections MUST be opened in doInBackground
         @Override
-        public String doInBackground(String ... uri)
-        {
-
+        public String doInBackground(String ... uri) {
             try {
-
                 URL url = new URL(uri[0]);
                 HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
@@ -205,33 +245,25 @@ public class Home extends Fragment {
                     }
                     br.close();
                     return sb.toString();
-
                 } finally {
                     urlConnection.disconnect();
                 }
-
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 System.out.println("mehri" + e.getMessage());
             }
-
             return "Done";
         }
-
 
         @Override
         protected void onPreExecute() {
             simpleProgressBar.setVisibility(View.VISIBLE);
         }
-
-        //Type 2
-        public void onProgressUpdate(Integer ... args)
-        {
+        //this method updates the gui
+        public void onProgressUpdate(Integer ... args) {
             simpleProgressBar.setVisibility(View.VISIBLE);
         }
-        //Type3
-        public void onPostExecute(String fromDoInBackground)
-        {
+        //This method will execute when the doInBackground has finished
+        public void onPostExecute(String fromDoInBackground) {
             new Handler().postDelayed(new Runnable(){
                 @Override
                 public void run(){
@@ -240,11 +272,18 @@ public class Home extends Fragment {
             }, 1000);
         }
     }
+
+    /**
+     *ListAdapter is an Interface that must implementED by writing these 4 public functions
+     * Whenever you need a customized list in a ListView
+     */
     private class ListAdapter extends BaseAdapter {
+        //1-returns the number of items to display in the list(returns the size of theArray or ArrayList)
         public int getCount(){
             return events.size();
         }
 
+        //2-This function returnS the object to display at row position in the list
         public Event getItem(int position) {
             return events.get(position);
         }
@@ -253,7 +292,7 @@ public class Home extends Fragment {
         public long getItemId(int position) {
             return getItem(position).id;
         }
-
+        //4-creates a View object(newView) to go in a row of the ListView and returns newView
         public View getView(int position, View old, ViewGroup parent){
 
             LayoutInflater inflater = getLayoutInflater(); //we need a LayoutInflater object to load an XML layout file
@@ -272,6 +311,9 @@ public class Home extends Fragment {
         }
     }
 
+    /**
+     * this class is a type for our eventList arrayList<Event>
+     */
     class Event {
         String name;
         String _id;
@@ -285,6 +327,9 @@ public class Home extends Fragment {
         }
     }
 
+    /**
+     * codes inside this method will be executed when the fragment is destroyed
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
