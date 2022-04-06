@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Course: 22W-CST2335-013
+    Professor: Frank Emanuel
+    Author: Afsaneh khabbazi basmenj
+    student# 040998618
+    File name: string.xml
+    Date: 2022-04-08
+    Final Project-->
 <resources>
     <string name="app_name">Final Project</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="btnSearch">"Find nearby events"</string>
+    <string name="rowText">TextView</string>
+    <string name="drawerHome">Home</string>
+    <string name="drawerSaved">Saved events</string>
+    <string name="drawerSearched">Last searched event</string>
+    <string name="toolbarHome">Home</string>
+    <string name="toolbarSaved">Saved events</string>
+    <string name="toolbarSearched">Last searched event</string>
+    <string name="help">help</string>
+    <string name="cityHint">Search By City</string>
+    <string name="distanceHint">Search distance (radius) - km</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_task_2">detail_Afsaneh Khabbazi</string>
+    <string name="view_ticket">VIEW ON TICKET MASTER</string>
+    <string name="save_btn">SAVE</string>
+    <string name="help_title">Help</string>
+    <string name="help_close">CLOSE</string>
+    <string name="help_message">User clicks on item, they can see the
+        item result here! There is a link will redirect user
+        to the event details? . User can also save the event</string>
+
 </resources>
