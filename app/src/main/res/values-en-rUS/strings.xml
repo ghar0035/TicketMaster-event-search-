@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Course: 22W-CST2335-013
     Professor: Frank Emanuel
+    Author: Afsaneh khabbazi basmenj
+    student# 040998618
     Author: Mehri Gharacheh
     student# 041005509
     File name: string.xml
@@ -22,4 +24,12 @@
     <string name="cityHint">Search By City</string>
     <string name="distanceHint">Search distance (radius) - km</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_task_2">detail_Afsaneh Khabbazi</string>
+    <string name="view_ticket">VIEW ON TICKET MASTER</string>
+    <string name="save_btn">SAVE</string>
+    <string name="help_title">Help</string>
+    <string name="help_close">CLOSE</string>
+    <string name="help_message">User clicks on item, they can see the
+        item result here! There is a link will redirect user
+        to the event details? . User can also save the event</string>
 </resources>

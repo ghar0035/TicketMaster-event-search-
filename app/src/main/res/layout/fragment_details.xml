@@ -4,11 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Details">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:isScrollContainer="false"
+>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="10dp"
         >
 
 
@@ -16,7 +21,7 @@
             android:id="@+id/imageView3"
 
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             tools:srcCompat="@tools:sample/avatars" />
 
         <TextView
@@ -43,6 +48,7 @@
 
         <TextView
             android:id="@+id/date"
+            android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Event date" />
@@ -69,4 +75,6 @@
             android:indeterminateTint="@color/black"
             android:maxHeight="0dp"/>
     </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 </FrameLayout>
