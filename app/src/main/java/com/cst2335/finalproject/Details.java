@@ -1,8 +1,10 @@
 package com.cst2335.finalproject;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
@@ -30,6 +33,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.concurrent.ExecutionException;
 
 import okhttp3.Response;
@@ -41,6 +47,10 @@ public class Details extends Fragment {
     Button saveBtn , viewBtn ;
     ImageView headImg;
     ProgressBar spinner;
+    Snackbar snackbar;
+    MyOpenHelper myOpener;
+    SQLiteDatabase db;
+    String lastSearchedEvent;
 
     public static final String ID = "ID";
 
@@ -67,7 +77,16 @@ public class Details extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+      // DATABASE
 
+
+         // initilize the onCreate
+        myOpener = new MyOpenHelper(this.getActivity());
+        // open the database
+        db = myOpener.getWritableDatabase();
+
+
+        // END of DATABASE
 
 
         getActivity().setTitle("detail-Afsaneh Khabbazibasmenj-VB");
@@ -77,6 +96,7 @@ public class Details extends Fragment {
         spinner = newView.findViewById(R.id.spinner);
         spinner.setVisibility(View.GONE);
         title = (TextView)newView.findViewById(R.id.title);
+        viewBtn = (Button)newView.findViewById(R.id.button2);
         headImg = (ImageView) newView.findViewById(R.id.imageView3);
         date= (TextView)newView.findViewById(R.id.date);
         saveBtn = (Button)newView.findViewById(R.id.button3);
@@ -102,7 +122,7 @@ public class Details extends Fragment {
 
         if(result == null) {
             SharedPreferences prefs = this.getActivity().getSharedPreferences( "SEARCH_DETAIL" , Context.MODE_PRIVATE);
-            String lastSearchedEvent = prefs.getString("lastSearchedEvent", "");
+            lastSearchedEvent = prefs.getString("lastSearchedEvent", "");
             result = lastSearchedEvent;
         }
 
@@ -119,10 +139,18 @@ public class Details extends Fragment {
         String formattedPrice = "From " + minPrice + " " + currency + " To: " + maxPrice;
         price.setText(formattedPrice);
 
-        String lastSearchedEvent = eventObject.toString();
-        //  String dateString = eventObject.get("start").getAsString();
+         lastSearchedEvent = eventObject.toString();
 
-        //  date.setText(dateString);
+        String dateStartObject = eventObject.get("sales").getAsJsonObject().get("public").getAsJsonObject().get("startDateTime").getAsString();
+        SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
+
+        try {
+
+            date.setText(format.parse(dateStartObject).toString().substring(0, 10));
+        } catch (ParseException parseException) {
+            parseException.printStackTrace();
+        }
+
         title.setText(name);
 
         String imgUrl = eventObject.get("images").getAsJsonArray().get(0).getAsJsonObject().get("url").getAsString();
@@ -130,12 +158,31 @@ public class Details extends Fragment {
         Picasso.get().load(imgUrl).into(headImg);
 
 
-        viewBtn = (Button)newView.findViewById(R.id.button2);
         viewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkUrl));
                 getActivity().startActivity(intent);
+            }
+        });
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackbar = Snackbar.make(view, "The event saved successfully", 3000);
+                snackbar.setAction("OK", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar.dismiss();
+                    }
+                });
+                ContentValues cv =  new ContentValues();
+                cv.put(myOpener.COL_ID, id);
+                cv.put(myOpener.COL_DATA, lastSearchedEvent );
+                db.insert(myOpener.TABLE_NAME, null, cv );
+                snackbar.show();
+
+
             }
         });
 
@@ -145,10 +192,13 @@ public class Details extends Fragment {
         return newView;
     }
 
-    private void saveLastestEvent(String lastSearchedEvent) {
+
+
+
+    private void saveLastestEvent(String lastEvent) {
         SharedPreferences prefs = getActivity().getSharedPreferences( "SEARCH_DETAIL" , Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = prefs.edit();
-        edit.putString("lastSearchedEvent", lastSearchedEvent);
+        edit.putString("lastSearchedEvent", lastEvent);
 
         edit.commit();
     }
