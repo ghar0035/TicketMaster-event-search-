@@ -1,8 +1,14 @@
 <resources>
+    <!--Course: 22W-CST2335-013
+    Professor: Frank Emanuel
+    Extended By: Mehri Gharacheh
+    student# 041005509
+    File name: string.xml
+    Date: 2022-04-08
+    Final Project-->
     <string name="app_name">Final Project</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="btnSearch">"Find nearby events"</string>
     <string name="rowText">TextView</string>
     <string name="drawerHome">Home</string>

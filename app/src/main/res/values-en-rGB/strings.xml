@@ -3,6 +3,9 @@
     Professor: Abul Ghasem
     Author: Afsaneh khabbazi basmenj
     student# 040998618
+    Professor: Frank Emanuel
+    Author: Mehri Gharacheh
+    student# 041005509
     File name: string.xml
     Date: 2022-04-08
     Final Project-->
@@ -30,5 +33,4 @@
     <string name="help_message">User clicks on item, they can see the
         item result here! There is a link will redirect user
         to the event details? . User can also save the event</string>
-
 </resources>
