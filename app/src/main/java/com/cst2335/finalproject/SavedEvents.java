@@ -51,7 +51,7 @@ public class SavedEvents extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment SavedEvents.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static SavedEvents newInstance(String param1, String param2) {
         SavedEvents fragment = new SavedEvents();
         Bundle args = new Bundle();
@@ -70,6 +70,14 @@ public class SavedEvents extends Fragment {
         }
     }
 
+    /**
+     * this class is used to inflate the UI
+     *
+     * @param inflater : a LayoutInflater object to load an XML layout file
+     * @param container  : acts as an invisible container in which other Views and Layouts are placed
+     * @param savedInstanceState : a reference to a Bundle object that is passed into the onCreateView method
+     * @return newView : is the root object from your XML file, It contains the widgets that are in your layout
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getActivity().setTitle("Evan - Saved Events");
@@ -91,23 +99,22 @@ public class SavedEvents extends Fragment {
         /**
          * Check last deleted event button
          */
-        checkLastDelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences prefs = getActivity().getSharedPreferences("LAST EVENT", Context.MODE_PRIVATE);
+        checkLastDelBtn.setOnClickListener(view -> {
+            SharedPreferences prefs = getActivity().getSharedPreferences("LAST EVENT", Context.MODE_PRIVATE);
 
-                String eventID = prefs.getString("eventID", "");
-                String eventDATA = prefs.getString("eventDATA", "");
+            String eventID = prefs.getString("eventID", "");
+            String eventDATA = prefs.getString("eventDATA", "");
 
-            }
         });
 
-
         return newView;
-
     }
 
-        private class ListAdapter extends BaseAdapter {
+
+    /**
+     * ListAdapter interface implemented with the 4 functions to use with a customized list
+     */
+    private class ListAdapter extends BaseAdapter {
             private Context context;
             private ArrayList<Event> events;
 
@@ -171,7 +178,7 @@ public class SavedEvents extends Fragment {
         }
 
     /**
-     * model event class
+     * model event class for ArrayList
      */
     static class Event {
         private String eventID;
