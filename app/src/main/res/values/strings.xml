@@ -29,4 +29,6 @@
     <string name="help_message">User clicks on item, they can see the
         item result here! There is a link will redirect user
         to the event details? . User can also save the event</string>
+
+    <string name="check_last_deleted">Check the last deleted event details</string>
 </resources>

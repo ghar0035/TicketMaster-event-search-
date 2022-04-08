@@ -259,8 +259,8 @@ public class Details extends Fragment {
         }
     }
 
-    public class Event {
-        private   String ind ;
+    public static class Event {
+        private String ind ;
         private String name;
         private String url;
         private String img_link;

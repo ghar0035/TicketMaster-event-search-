@@ -1,5 +1,8 @@
 package com.cst2335.finalproject;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,18 +10,35 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
 
  */
 public class SavedEvents extends Fragment {
 
+    Snackbar snackbar;
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     private String mParam1;
     private String mParam2;
+    SQLiteDatabase db;
+    MyOpenHelper myOpener;
 
+    /**
+     * default constructor
+     */
     public SavedEvents() {
         // Required empty public constructor
     }
@@ -48,14 +68,126 @@ public class SavedEvents extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
-        getActivity().setTitle("Evan");
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_saved_events, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        getActivity().setTitle("Evan - Saved Events");
+
+        View newView = inflater.inflate(R.layout.fragment_saved_events, container, false);
+
+        MyOpenHelper myOpener = new MyOpenHelper(this.getActivity());
+        SQLiteDatabase DB = myOpener.getWritableDatabase();
+        ArrayList<Event> eventArrayList = myOpener.getEvents();
+
+
+        ListAdapter adapter = new ListAdapter(this.getActivity(), eventArrayList);
+        ListView eventListView = newView.findViewById(R.id.eventListView3);
+        eventListView.setAdapter(adapter);
+
+        Button checkLastDelBtn = newView.findViewById(R.id.btnCheckLastDel);
+
+
+        /**
+         * Check last deleted event button
+         */
+        checkLastDelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences prefs = getActivity().getSharedPreferences("LAST EVENT", Context.MODE_PRIVATE);
+
+                String eventID = prefs.getString("eventID", "");
+                String eventDATA = prefs.getString("eventDATA", "");
+
+            }
+        });
+
+
+        return newView;
+
     }
+
+        private class ListAdapter extends BaseAdapter {
+            private Context context;
+            private ArrayList<Event> events;
+
+            public ListAdapter(Context context, ArrayList<Event> events) {
+                this.context = context;
+                this.events = events;
+            }
+
+            public int getCount() {
+                return events.size();
+            }
+
+            public Object getItem(int position) {
+                return events.get(position);
+            }
+
+            public long getItemId(int position) {
+                return position;
+            }
+
+            public View getView(int position, View newView, ViewGroup parent) {
+
+                LayoutInflater inflater = getLayoutInflater();
+                newView = inflater.inflate(R.layout.event_listview_layout, parent, false);
+
+                LinearLayout rowLayout = newView.findViewById(R.id.eventContainer);
+
+                Event currentEvent = (Event) getItem(position);
+
+                TextView tView = newView.findViewById(R.id.eventID);
+                TextView tView2 = newView.findViewById(R.id.eventDATA);
+                Button deleteButton = newView.findViewById(R.id.delete_btn);
+
+                tView.setText(currentEvent.getEventID());
+                tView2.setText(currentEvent.getEventData());
+
+                deleteButton.setTag(position);
+
+                deleteButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        snackbar = Snackbar.make(view, "The event has been deleted", 3000);
+                        snackbar.setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                snackbar.dismiss();
+                            }
+                        });
+                        SharedPreferences prefs = getActivity().getSharedPreferences("LAST EVENT", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor edit = prefs.edit();
+
+                        edit.putString("eventID", currentEvent.eventID.toString());
+                        edit.putString("eventDATA", currentEvent.eventData.toString());
+                        edit.apply();
+                        snackbar.show();
+                    }
+                });
+
+                return newView;   //return the inflated view
+            }
+        }
+
+    /**
+     * model event class
+     */
+    static class Event {
+        private String eventID;
+        private String eventData;
+        public Event (String eventID, String eventData) {
+            this.eventID = eventID;
+            this.eventData = eventData;
+        }
+
+        public String getEventID() {
+            return this.eventID;
+        }
+
+        public String getEventData() {
+            return eventData;
+        }
+    }
+
 }

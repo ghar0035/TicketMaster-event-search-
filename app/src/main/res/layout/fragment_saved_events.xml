@@ -6,10 +6,29 @@
     tools:context=".SavedEvents">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_marginTop="200dp"
+    <LinearLayout
+        android:id="@+id/savedEvents_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Saved events" />
+        android:orientation="vertical"
+        android:paddingTop="50dp"
+        tools:context=".SavedEvents">
+
+        <ListView
+            android:id="@+id/eventListView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_weight="5"/>
+
+
+        <Button
+            android:layout_margin="10dp"
+            android:id="@+id/btnCheckLastDel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/check_last_deleted" />
+
+    </LinearLayout>
 
 </FrameLayout>
