@@ -14,7 +14,7 @@
         android:id="@+id/help"
         android:icon="@drawable/question"
         android:orderInCategory="1"
-        android:title="help"
+        android:title="@string/help"
         app:showAsAction="always" />
 
     <item

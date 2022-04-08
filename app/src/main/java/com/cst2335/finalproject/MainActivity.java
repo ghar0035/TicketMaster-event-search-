@@ -74,6 +74,7 @@ import java.util.concurrent.ExecutionException;
 
 /**
  *this ins our main and first activity which contains the toolbar , the toolbarMenu, the drawerBar and the drawer menu
+ * Author: Mehri Gharacheh
  */
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
     /**
