@@ -1,5 +1,12 @@
 
 package com.cst2335.finalproject;
+/**
+ * course: 22W-CST 2335-011
+ * author afsaneh khabbazibasmenj
+ * professor Abul Qasim
+ * student number: 040998618
+ * file name: Detail.java
+ */
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -44,8 +51,8 @@ import okhttp3.Response;
 
 public class Details extends Fragment {
     Event e;
-    TextView title , date, price ;
-    Button saveBtn , viewBtn ;
+    TextView title, date, price;
+    Button saveBtn, viewBtn;
     ImageView headImg;
     ProgressBar spinner;
     Snackbar snackbar;
@@ -62,12 +69,11 @@ public class Details extends Fragment {
     }
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        //get the ID
         if (getArguments() != null) {
             id = getArguments().getString(ID);
 
@@ -78,10 +84,10 @@ public class Details extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-      // DATABASE
+        // DATABASE
 
 
-         // initilize the onCreate
+        // initilize the onCreate
         myOpener = new MyOpenHelper(this.getActivity());
         // open the database
         db = myOpener.getWritableDatabase();
@@ -96,17 +102,17 @@ public class Details extends Fragment {
         // move oncreate
         spinner = newView.findViewById(R.id.spinner);
         spinner.setVisibility(View.GONE);
-        title = (TextView)newView.findViewById(R.id.title);
-        viewBtn = (Button)newView.findViewById(R.id.button2);
+        title = (TextView) newView.findViewById(R.id.title);
+        viewBtn = (Button) newView.findViewById(R.id.button2);
         headImg = (ImageView) newView.findViewById(R.id.imageView3);
-        date= (TextView)newView.findViewById(R.id.date);
-        saveBtn = (Button)newView.findViewById(R.id.button3);
+        date = (TextView) newView.findViewById(R.id.date);
+        saveBtn = (Button) newView.findViewById(R.id.button3);
         price = newView.findViewById(R.id.price);
 
 
         // call http get request
         String result = null;
-        if(id != null) {
+        if (id != null) {
             String url = "https://app.ticketmaster.com/discovery/v2/events/" + id + ".json?apikey=s5ymFAVDKGupqsgEGeBHHycyM4sP1Plr";
 
             try {
@@ -121,66 +127,78 @@ public class Details extends Fragment {
         }
 
 
-        if(result == null) {
-            SharedPreferences prefs = this.getActivity().getSharedPreferences( "SEARCH_DETAIL" , Context.MODE_PRIVATE);
+        if (result == null) {
+            SharedPreferences prefs = this.getActivity().getSharedPreferences("SEARCH_DETAIL", Context.MODE_PRIVATE);
             lastSearchedEvent = prefs.getString("lastSearchedEvent", "");
             result = lastSearchedEvent;
         }
-
+        //creat an object of Cson
         Gson gson = new Gson();
+        // we use result
         JsonObject eventObject = gson.fromJson(result, JsonObject.class);
+        //get the name
         String name = eventObject.get("name").getAsString();
+        //get the url
         String linkUrl = eventObject.get("url").getAsString();
         JsonObject priceRange = eventObject.get("priceRanges").getAsJsonArray().get(0).getAsJsonObject();
-
+//get currency,min,max
         String currency = priceRange.get("currency").getAsString();
-        String minPrice  = priceRange.get("min").getAsString();
+        String minPrice = priceRange.get("min").getAsString();
         String maxPrice = priceRange.get("max").getAsString();
-
+//show price in this format
         String formattedPrice = "From " + minPrice + " " + currency + " To: " + maxPrice;
-        price.setText(formattedPrice);
-
-         lastSearchedEvent = eventObject.toString();
-
+//get date by using sales
         String dateStartObject = eventObject.get("sales").getAsJsonObject().get("public").getAsJsonObject().get("startDateTime").getAsString();
         SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy");
 
-        try {
 
+        //set name for title
+        title.setText(name);
+        price.setText(formattedPrice);
+        try {
+        //set date
             date.setText(format.parse(dateStartObject).toString().substring(0, 10));
         } catch (ParseException parseException) {
             parseException.printStackTrace();
         }
 
-        title.setText(name);
-
+        //get the image
         String imgUrl = eventObject.get("images").getAsJsonArray().get(0).getAsJsonObject().get("url").getAsString();
 
         Picasso.get().load(imgUrl).into(headImg);
 
-
+//viewBtn setonvlicklistener
         viewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
+            //use intent for going to linkurl page
             public void onClick(View view) {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkUrl));
                 getActivity().startActivity(intent);
             }
         });
 
+        lastSearchedEvent = eventObject.toString();
+        /**
+         * onclick listener for saveBtn for save the last event in data base
+         */
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                ContentValues cv = new ContentValues();
+                cv.put(myOpener.COL_ID, id);
+                cv.put(myOpener.COL_DATA, lastSearchedEvent);
+                db.insert(myOpener.TABLE_NAME, null, cv);
+                //snackbar for save the event
+
                 snackbar = Snackbar.make(view, "The event saved successfully", 3000);
+                //set action in snack bar for ok and close it
                 snackbar.setAction("OK", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         snackbar.dismiss();
                     }
                 });
-                ContentValues cv =  new ContentValues();
-                cv.put(myOpener.COL_ID, id);
-                cv.put(myOpener.COL_DATA, lastSearchedEvent );
-                db.insert(myOpener.TABLE_NAME, null, cv );
                 snackbar.show();
 
 
@@ -192,12 +210,10 @@ public class Details extends Fragment {
 
         return newView;
     }
-
-
-
+    //save lastsearchevent by using sharepreference
 
     private void saveLastestEvent(String lastEvent) {
-        SharedPreferences prefs = getActivity().getSharedPreferences( "SEARCH_DETAIL" , Context.MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences("SEARCH_DETAIL", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = prefs.edit();
         edit.putString("lastSearchedEvent", lastEvent);
 
@@ -206,8 +222,7 @@ public class Details extends Fragment {
 
     class RequestTask extends AsyncTask<String, String, String> {
         @Override
-        public String doInBackground(String ... uri)
-        {
+        public String doInBackground(String... uri) {
 
             try {
 
@@ -219,7 +234,7 @@ public class Details extends Fragment {
                     StringBuilder sb = new StringBuilder();
                     String line;
                     while ((line = br.readLine()) != null) {
-                        sb.append(line+"\n");
+                        sb.append(line + "\n");
                     }
                     br.close();
                     return sb.toString();
@@ -228,8 +243,7 @@ public class Details extends Fragment {
                     urlConnection.disconnect();
                 }
 
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 System.out.println("mehri" + e.getMessage());
             }
 
@@ -243,24 +257,23 @@ public class Details extends Fragment {
         }
 
         //Type 2
-        public void onProgressUpdate(Integer ... args)
-        {
+        public void onProgressUpdate(Integer... args) {
             spinner.setVisibility(View.VISIBLE);
         }
+
         //Type3
-        public void onPostExecute(String fromDoInBackground)
-        {
-            new Handler().postDelayed(new Runnable(){
+        public void onPostExecute(String fromDoInBackground) {
+            new Handler().postDelayed(new Runnable() {
                 @Override
-                public void run(){
+                public void run() {
                     spinner.setVisibility(View.GONE);
                 }
             }, 1000);
         }
     }
-
-    public static class Event {
-        private  String ind ;
+  
+    public class Event {
+        private String ind;
         private String name;
         private String url;
         private String img_link;

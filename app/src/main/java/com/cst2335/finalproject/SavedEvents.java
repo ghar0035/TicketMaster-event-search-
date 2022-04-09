@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -50,6 +51,7 @@ import java.util.HashMap;
  * A simple {@link Fragment} subclass.
  *
  */
+
 public class SavedEvents extends Fragment {
     /**
      * ArrayList as a container for events

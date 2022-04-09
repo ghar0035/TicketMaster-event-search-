@@ -1,5 +1,11 @@
 package com.cst2335.finalproject;
-
+/**
+ * course: 22W-CST 2335-011
+ * author afsaneh khabbazibasmenj
+ * professor Abul Qasim
+ * student number: 040998618
+ * file name: Detail.java
+ */
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
