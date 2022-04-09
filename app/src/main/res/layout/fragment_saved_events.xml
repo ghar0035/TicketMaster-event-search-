@@ -22,12 +22,12 @@
             android:layout_weight="5"/>
 
 
-        <Button
-            android:layout_margin="10dp"
-            android:id="@+id/btnCheckLastDel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/check_last_deleted" />
+<!--        <Button-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:id="@+id/btnCheckLastDel"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/check_last_deleted" />-->
 
     </LinearLayout>
 

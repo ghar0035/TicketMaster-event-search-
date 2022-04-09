@@ -175,8 +175,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             "the user will see some details about the event!");
                 } else if(tagName == "SAVED") {
                     showHelpDialouge("Here is a list of all the events saved by the user. " +
-                            "The user can check the last deleted event by clicking the button " +
-                            "at the bottom of the screen.");
+                            "The user can check delete saved events by clicking the DEL button.");
                 } else if(tagName == "DETAIL") {
                     showHelpDialouge("User clicks on item, they can see the " +
                             "item result here! There is a link will redirect user " +

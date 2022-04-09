@@ -260,7 +260,7 @@ public class Details extends Fragment {
     }
 
     public static class Event {
-        private String ind ;
+        private  String ind ;
         private String name;
         private String url;
         private String img_link;
