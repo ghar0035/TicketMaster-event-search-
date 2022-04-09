@@ -1,5 +1,11 @@
 package com.cst2335.finalproject;
-
+/**
+ * course: 22W-CST 2335-011
+ * author afsaneh khabbazibasmenj
+ * professor Abul Qasim
+ * student number: 040998618
+ * file name: Detail.java
+ */
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,9 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
 
- */
 public class SavedEvents extends Fragment {
 
     private static final String ARG_PARAM1 = "param1";
@@ -53,6 +57,9 @@ public class SavedEvents extends Fragment {
     }
 
     @Override
+    /**
+     * @return Inflate the layout for this fragment
+     */
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
