@@ -8,10 +8,18 @@ package com.cst2335.finalproject;
  */
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
+
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class MyOpenHelper extends SQLiteOpenHelper {
     public static final String fileName = "EventManagerDatabase";
@@ -45,6 +53,32 @@ public class MyOpenHelper extends SQLiteOpenHelper {
 
         //create a new table:
         this.onCreate(db); //calls function on line 26
+    }
+
+    public void insertData(String id, String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("id",id);
+        cv.put("name", name);
+        db.insert(TABLE_NAME, null, cv);
+        db.close();
+    }
+
+    public ArrayList getEvents() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<String> eventList = new ArrayList<>();
+        String selectAll = "SELECT * FROM " + TABLE_NAME;
+
+        Cursor cursor = db.rawQuery(selectAll, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                eventList.add(cursor.getString(0));
+                eventList.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return eventList;
     }
 
 }

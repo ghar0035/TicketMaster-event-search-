@@ -271,7 +271,7 @@ public class Details extends Fragment {
             }, 1000);
         }
     }
-
+  
     public class Event {
         private String ind;
         private String name;
