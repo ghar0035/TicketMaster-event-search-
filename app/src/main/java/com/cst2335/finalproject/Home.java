@@ -49,7 +49,7 @@ import java.util.concurrent.ExecutionException;
 
 /**
  * A simple {@link Fragment} subclass.
- *
+ * Author: Mehri Gharacheh
  */
 public class Home extends Fragment {
     /**
@@ -77,44 +77,12 @@ public class Home extends Fragment {
      */
     EditText radiusTextBox;
 
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    private String mParam1;
-    private String mParam2;
-
     /**
      * default constructor
      */
     public Home() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Home.
-     */
-    public static Home newInstance(String param1, String param2) {
-        Home fragment = new Home();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-           }
 
     /**
      *this class is where to inflate the UI
@@ -151,18 +119,16 @@ public class Home extends Fragment {
         btnSearch.setOnClickListener(click -> {
 
             searchNearByEvents(newView);
-
+            //moves scroll to the top when the user click search button
             eventListView.smoothScrollToPosition(0);
         });
 
         eventListView.setOnItemClickListener( (list, view, position , id) -> {
-
+            // pass id to the detail fragment
             Details detailFragment = new Details();
             Bundle args = new Bundle();
             args.putString(detailFragment.ID, events.get(position)._id);
             detailFragment.setArguments(args);
-
-
 
             FragmentTransaction ft = getParentFragmentManager().beginTransaction();// begin  FragmentTransaction
             ft.setReorderingAllowed(true);
@@ -183,7 +149,7 @@ public class Home extends Fragment {
         InputMethodManager inputManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
                 InputMethodManager.HIDE_NOT_ALWAYS);
-
+//if the search boxes are empty do nothing
          if(eventTextBox.getText().length() == 0 || radiusTextBox.getText().length() == 0) {
              return;
          }
